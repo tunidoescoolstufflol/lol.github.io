@@ -4,79 +4,166 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>JJS Helpers</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+ 
+    :root {
+      --gold: #c8a55a;
+      --gold-bright: #e8c878;
+      --gold-dim: #7a6030;
+      --bg: #0f0f0f;
+      --bg2: #131313;
+      --bg3: #191919;
+      --border: #222;
+      --text: #c8c8c8;
+      --text-dim: #555;
+      --text-bright: #ebebeb;
+    }
+ 
     body {
-      background: #181818;
-      color: #d4d4d4;
-      font-family: 'Courier New', monospace;
-      font-size: 14px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
       height: 100vh;
       overflow: hidden;
     }
-
+ 
+    /* Scanline overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.07) 2px,
+        rgba(0,0,0,0.07) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+ 
     .layout {
       display: flex;
       height: 100vh;
       width: 100vw;
     }
-
+ 
     /* ── SIDEBAR ── */
     .sidebar {
-      width: 240px;
-      min-width: 240px;
-      background: #141414;
-      border-right: 1px solid #2a2a2a;
+      width: 220px;
+      min-width: 220px;
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
+      position: relative;
     }
-
+ 
+    /* subtle gold glow on sidebar right edge */
+    .sidebar::after {
+      content: '';
+      position: absolute;
+      right: -1px;
+      top: 20%;
+      height: 60%;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, var(--gold-dim), transparent);
+    }
+ 
     .sidebar-logo {
-      padding: 18px 18px 14px;
-      border-bottom: 1px solid #2a2a2a;
-      font-size: 11px;
-      color: #555;
-      letter-spacing: 0.1em;
+      padding: 22px 18px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+ 
+    .sidebar-logo .wordmark {
+      font-family: 'Space Mono', monospace;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+ 
+    .sidebar-logo .wordmark::before {
+      content: '◈';
+      font-size: 12px;
+      opacity: 0.7;
+    }
+ 
+    .sidebar-logo .sub {
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.18em;
       text-transform: uppercase;
     }
-
-    .sidebar-logo span {
-      display: block;
-      font-size: 15px;
-      color: #e0e0e0;
-      font-weight: bold;
-      letter-spacing: 0.05em;
-      margin-bottom: 2px;
-    }
-
+ 
     .tab-btn {
-      display: block;
+      display: flex;
+      align-items: center;
+      gap: 10px;
       width: 100%;
-      padding: 13px 18px;
+      padding: 12px 18px;
       background: none;
       border: none;
-      border-bottom: 1px solid #1f1f1f;
-      border-left: 3px solid transparent;
+      border-bottom: 1px solid #1a1a1a;
       text-align: left;
       cursor: pointer;
-      font-family: 'Courier New', monospace;
-      font-size: 14px;
-      color: #aaa;
-      transition: background 0.1s, color 0.1s, border-left-color 0.1s;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: #666;
+      transition: all 0.15s;
+      position: relative;
+      letter-spacing: 0.04em;
     }
-
+ 
+    .tab-btn::before {
+      content: '';
+      display: block;
+      width: 5px;
+      height: 5px;
+      border: 1px solid #333;
+      transform: rotate(45deg);
+      flex-shrink: 0;
+      transition: all 0.15s;
+    }
+ 
     .tab-btn:hover {
-      background: #1e1e1e;
-      color: #d4d4d4;
+      background: #1a1a1a;
+      color: var(--text);
     }
-
+ 
+    .tab-btn:hover::before {
+      border-color: var(--gold-dim);
+    }
+ 
     .tab-btn.active {
-      background: #222;
-      color: #fff;
-      border-left: 3px solid #c8a55a;
+      background: #1c1c1c;
+      color: var(--gold-bright);
     }
-
+ 
+    .tab-btn.active::before {
+      background: var(--gold);
+      border-color: var(--gold);
+      box-shadow: 0 0 6px var(--gold-dim);
+    }
+ 
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+    }
+ 
     /* ── MAIN ── */
     .main {
       flex: 1;
@@ -84,147 +171,541 @@
       flex-direction: column;
       overflow: hidden;
     }
-
+ 
     .topbar {
-      padding: 9px 18px;
-      border-bottom: 1px solid #2a2a2a;
-      background: #161616;
+      padding: 10px 20px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg2);
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
-
+ 
+    .search-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+ 
+    .search-wrap::before {
+      content: '⌕';
+      position: absolute;
+      left: 10px;
+      color: var(--text-dim);
+      font-size: 14px;
+      pointer-events: none;
+    }
+ 
     .topbar input {
-      background: #1c1c1c;
-      border: 1px solid #333;
-      padding: 6px 12px;
-      color: #aaa;
-      font-family: 'Courier New', monospace;
-      font-size: 12px;
-      width: 280px;
+      background: #111;
+      border: 1px solid #2a2a2a;
+      padding: 7px 12px 7px 30px;
+      color: var(--text);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      width: 300px;
       outline: none;
-      transition: border-color 0.15s;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      letter-spacing: 0.03em;
     }
-
+ 
     .topbar input:focus {
-      border-color: #c8a55a;
-      color: #d4d4d4;
+      border-color: var(--gold-dim);
+      box-shadow: 0 0 0 1px rgba(200, 165, 90, 0.08), inset 0 0 12px rgba(200,165,90,0.03);
+      color: var(--text-bright);
     }
-
-    .topbar input::placeholder { color: #444; }
-
+ 
+    .topbar input::placeholder { color: #333; }
+ 
+    .topbar-badge {
+      margin-left: auto;
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      border: 1px solid #222;
+      padding: 3px 8px;
+    }
+ 
     /* ── CONTENT ── */
     .content {
       flex: 1;
       overflow-y: auto;
-      padding: 24px 26px;
+      padding: 28px 28px;
     }
-
+ 
     .section-heading {
-      color: #888;
-      font-size: 13px;
-      margin-bottom: 16px;
-      letter-spacing: 0.03em;
-    }
-
-    .link-list {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .link-row {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 7px 10px;
-      border-left: 2px solid transparent;
-      transition: background 0.12s, border-left-color 0.12s;
-      border-radius: 2px;
+      color: var(--gold);
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
     }
-
+ 
+    .section-heading::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, var(--gold-dim), transparent);
+      opacity: 0.4;
+    }
+ 
+    .link-list {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+ 
+    .link-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 0;
+      border: 1px solid transparent;
+      transition: all 0.15s;
+      border-radius: 1px;
+      opacity: 0;
+      animation: fadeSlideIn 0.3s forwards;
+    }
+ 
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateX(-6px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+ 
+    .link-row:nth-child(1) { animation-delay: 0.05s; }
+    .link-row:nth-child(2) { animation-delay: 0.10s; }
+    .link-row:nth-child(3) { animation-delay: 0.15s; }
+    .link-row:nth-child(4) { animation-delay: 0.20s; }
+ 
     .link-row:hover {
-      background: #1e1e1e;
-      border-left: 2px solid #c8a55a;
+      background: #161616;
+      border-color: #252525;
     }
-
+ 
+    .link-gutter {
+      width: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 0;
+      color: #333;
+      font-size: 11px;
+      transition: color 0.15s;
+      flex-shrink: 0;
+      font-family: 'Space Mono', monospace;
+      align-self: stretch;
+    }
+ 
+    .link-row:hover .link-gutter {
+      color: var(--gold);
+    }
+ 
+    .link-body {
+      flex: 1;
+      padding: 10px 12px 10px 4px;
+      overflow: hidden;
+    }
+ 
     .link-row a {
-      color: #d4d4d4;
+      color: #7a7a7a;
       text-decoration: none;
-      font-family: 'Courier New', monospace;
-      font-size: 13px;
-      transition: color 0.1s;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      transition: color 0.15s;
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      letter-spacing: 0.01em;
     }
-
+ 
     .link-row:hover a {
-      color: #e8c878;
+      color: var(--text-bright);
     }
-
-    .dot {
-      color: #c8a55a;
-      font-size: 16px;
-      line-height: 1;
+ 
+    .link-label {
+      font-size: 10px;
+      color: #333;
+      margin-top: 1px;
+      letter-spacing: 0.05em;
+      font-family: 'Space Mono', monospace;
+    }
+ 
+    .link-row:hover .link-label {
+      color: var(--gold-dim);
+    }
+ 
+    .link-arrow {
+      padding: 10px 14px;
+      color: #252525;
+      font-size: 12px;
+      transition: color 0.15s, transform 0.15s;
       flex-shrink: 0;
     }
-
-    .content::-webkit-scrollbar { width: 5px; }
+ 
+    .link-row:hover .link-arrow {
+      color: var(--gold);
+      transform: translateX(2px);
+    }
+ 
+    /* scrollbar */
+    .content::-webkit-scrollbar { width: 4px; }
     .content::-webkit-scrollbar-track { background: transparent; }
-    .content::-webkit-scrollbar-thumb { background: #2a2a2a; }
+    .content::-webkit-scrollbar-thumb { background: #222; }
+    .content::-webkit-scrollbar-thumb:hover { background: var(--gold-dim); }
+ 
+    /* count badge */
+    #resultCount {
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-left: 8px;
+      letter-spacing: 0.05em;
+    }
+ 
+    /* ── DOC TAB ── */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+ 
+    .doc-section {
+      margin-bottom: 28px;
+    }
+ 
+    .doc-entry {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      border: 1px solid transparent;
+      transition: all 0.15s;
+      border-radius: 1px;
+      margin-bottom: 3px;
+      opacity: 0;
+      animation: fadeSlideIn 0.3s forwards;
+    }
+ 
+    .doc-entry:hover {
+      background: #161616;
+      border-color: #252525;
+    }
+ 
+    .doc-entry .link-gutter {
+      padding-top: 11px;
+    }
+ 
+    .doc-entry .link-body {
+      padding: 9px 12px 9px 4px;
+    }
+ 
+    .doc-entry a {
+      color: #8a8a8a;
+      text-decoration: none;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      transition: color 0.15s;
+      line-height: 1.5;
+      letter-spacing: 0.01em;
+    }
+ 
+    .doc-entry:hover a { color: var(--text-bright); }
+ 
+    .doc-entry .link-label {
+      font-size: 10px;
+      color: #393939;
+      margin-top: 2px;
+      letter-spacing: 0.03em;
+      line-height: 1.5;
+    }
+ 
+    .doc-entry:hover .link-label { color: var(--gold-dim); }
+    .doc-entry:hover .link-arrow { color: var(--gold); transform: translateX(2px); }
+ 
+    .doc-note {
+      font-size: 11px;
+      color: #444;
+      padding: 10px 10px 10px 40px;
+      font-style: italic;
+      letter-spacing: 0.02em;
+      line-height: 1.6;
+    }
+ 
+    .credits-bar {
+      font-size: 10px;
+      color: #393939;
+      letter-spacing: 0.08em;
+      padding: 16px 0 20px 0;
+      border-top: 1px solid #1c1c1c;
+      margin-top: 8px;
+    }
+ 
+    .credits-bar span { color: var(--gold-dim); }
+ 
+    /* stagger for doc entries */
+    .doc-entry:nth-child(1)  { animation-delay: 0.03s; }
+    .doc-entry:nth-child(2)  { animation-delay: 0.06s; }
+    .doc-entry:nth-child(3)  { animation-delay: 0.09s; }
+    .doc-entry:nth-child(4)  { animation-delay: 0.12s; }
+    .doc-entry:nth-child(5)  { animation-delay: 0.15s; }
+    .doc-entry:nth-child(6)  { animation-delay: 0.18s; }
+    .doc-entry:nth-child(7)  { animation-delay: 0.21s; }
+    .doc-entry:nth-child(8)  { animation-delay: 0.24s; }
+    .doc-entry:nth-child(9)  { animation-delay: 0.27s; }
+    /* ── BUBBLE TAB ── */
+    #tab-bubble {
+      padding: 0;
+      height: 100%;
+    }
+ 
+    #bubble-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+ 
+    .tab-panel.active#tab-bubble {
+      display: flex;
+      flex-direction: column;
+    }
+ 
   </style>
 </head>
 <body>
 <div class="layout">
-
+ 
   <aside class="sidebar">
     <div class="sidebar-logo">
-      <span>JJS Helpers</span>
-      resource hub
+      <div class="wordmark">JJS Helpers</div>
+      <div class="sub">resource hub</div>
     </div>
-    <button class="tab-btn active">JJS Helpers</button>
+    <button class="tab-btn active" onclick="switchTab('audio', this)">JJS Helpers</button>
+    <button class="tab-btn" onclick="switchTab('docs', this)">Useful Docs</button>
+    <button class="tab-btn" onclick="switchTab('bubble', this)">Bubble Forge</button>
   </aside>
-
+ 
   <div class="main">
     <div class="topbar">
-      <input type="text" placeholder="Search current content" id="searchInput" />
+      <div class="search-wrap">
+        <input type="text" placeholder="Search resources..." id="searchInput" />
+      </div>
+      <span id="resultCount"></span>
+      <div class="topbar-badge">v1.0</div>
     </div>
-
+ 
     <div class="content">
-      <div class="section-heading">Audio Creator Stores:</div>
-      <div class="link-list" id="linkList">
-
-        <div class="link-row">
-          <span class="dot">›</span>
-          <a href="https://create.roblox.com/store/audio?creatorName=GRISAlLLE" target="_blank">https://create.roblox.com/store/audio?creatorName=GRISAlLLE</a>
+      <div id="tab-audio" class="tab-panel active">
+        <div class="section-heading">Audio Creator Stores</div>
+        <div class="link-list" id="linkList">
+ 
+          <div class="link-row">
+            <div class="link-gutter">01</div>
+            <div class="link-body">
+              <a href="https://create.roblox.com/store/audio?creatorName=GRISAlLLE" target="_blank">create.roblox.com/store/audio?creatorName=GRISAlLLE</a>
+              <div class="link-label">GRISAlLLE</div>
+            </div>
+            <div class="link-arrow">→</div>
+          </div>
+ 
+          <div class="link-row">
+            <div class="link-gutter">02</div>
+            <div class="link-body">
+              <a href="https://create.roblox.com/store/audio?creatorName=SoundEffectsRoblox" target="_blank">create.roblox.com/store/audio?creatorName=SoundEffectsRoblox</a>
+              <div class="link-label">SoundEffectsRoblox</div>
+            </div>
+            <div class="link-arrow">→</div>
+          </div>
+ 
+          <div class="link-row">
+            <div class="link-gutter">03</div>
+            <div class="link-body">
+              <a href="https://create.roblox.com/store/audio?creatorName=aarondeminecraft1" target="_blank">create.roblox.com/store/audio?creatorName=aarondeminecraft1</a>
+              <div class="link-label">aarondeminecraft1</div>
+            </div>
+            <div class="link-arrow">→</div>
+          </div>
+ 
+          <div class="link-row">
+            <div class="link-gutter">04</div>
+            <div class="link-body">
+              <a href="https://create.roblox.com/store/audio?creatorName=N_WysperLvn" target="_blank">create.roblox.com/store/audio?creatorName=N_WysperLvn</a>
+              <div class="link-label">N_WysperLvn</div>
+            </div>
+            <div class="link-arrow">→</div>
+          </div>
+ 
         </div>
-
-        <div class="link-row">
-          <span class="dot">›</span>
-          <a href="https://create.roblox.com/store/audio?creatorName=SoundEffectsRoblox" target="_blank">https://create.roblox.com/store/audio?creatorName=SoundEffectsRoblox</a>
+      </div>
+ 
+      <!-- ── USEFUL DOCS TAB ── -->
+      <div id="tab-docs" class="tab-panel">
+ 
+        <div class="doc-section">
+          <div class="section-heading">Most Useful Documents</div>
+ 
+          <div class="doc-entry">
+            <div class="link-gutter">01</div>
+            <div class="link-body">
+              <a href="https://docs.google.com/document/d/1sbJplGz5cK6COaFjrGFZXlw5us9ZhegQ8C7ziIYntfk/edit?tab=t.0" target="_blank">Punches / Kicks / Weapons — directions & hand/leg used</a>
+              <div class="link-label">every punch/kick/weapon with its direction and arm/leg used</div>
+            </div>
+            <div class="link-arrow">→</div>
+          </div>
+ 
+          <div class="doc-entry">
+            <div class="link-gutter">02</div>
+            <div class="link-body">
+              <a href="https://docs.google.com/document/d/16xZJBYEyqAwvZaHy6sY0x0Y7e0dBl-CnJOE6oelSXrA/edit?tab=t.0" target="_blank">Every Running / Walking Animation (UPDATED)</a>
+              <div class="link-label">every walking/running animation</div>
+            </div>
+            <div class="link-arrow">→</div>
+          </div>
+ 
+          <div class="doc-entry">
+            <div class="link-gutter">03</div>
+            <div class="link-body">
+              <a href="https://docs.google.com/document/d/1wrcNA4EGIjVmluYtZzKGTx63V0TdoxD7614ZGGy103s/edit?usp=sharing" target="_blank">Move Durations JJS</a>
+              <div class="link-label">duration of every grab — credits to ujhjth</div>
+            </div>
+            <div class="link-arrow">→</div>
+          </div>
+ 
+          <div class="doc-entry">
+            <div class="link-gutter">04</div>
+            <div class="link-body">
+              <a href="https://docs.google.com/document/d/1q4kgTSTis9A2Cbvi-yUQ2M5PzJs20L7P5A6N60WSffM/edit" target="_blank">Every Flip Animation & Direction (UPDATED)</a>
+              <div class="link-label">every flip</div>
+            </div>
+            <div class="link-arrow">→</div>
+          </div>
+ 
+          <div class="doc-entry">
+            <div class="link-gutter">05</div>
+            <div class="link-body">
+              <a href="https://docs.google.com/document/d/1yce12ZWDxZAwbIu55tFTbzpnmVgLsSm3iOCjvxlJpZs/edit?tab=t.0" target="_blank">Animations That Close / Open Your Hands (UPDATED)</a>
+              <div class="link-label">animations that open/close your arms</div>
+            </div>
+            <div class="link-arrow">→</div>
+          </div>
+ 
+          <div class="doc-entry">
+            <div class="link-gutter">06</div>
+            <div class="link-body">
+              <a href="https://docs.google.com/document/d/1lZEhxharFcAdKXV9Ve3QB6r6nF5niTwMyP7ZHosMSH8/edit?tab=t.0" target="_blank">Almost All Move Startups (UPDATED)</a>
+              <div class="link-label">almost all windups before a move</div>
+            </div>
+            <div class="link-arrow">→</div>
+          </div>
+ 
+          <div class="doc-entry">
+            <div class="link-gutter">07</div>
+            <div class="link-body">
+              <a href="https://docs.google.com/document/d/1GD_UQWM00y5-h-88wMg60_DCKh7WmW37Y_qCoBib7fI/edit?usp=sharing" target="_blank">Music / Sound Effect IDs JJS</a>
+              <div class="link-label">music IDs for movesets, kill sounds, and more</div>
+            </div>
+            <div class="link-arrow">→</div>
+          </div>
+ 
+          <div class="doc-entry">
+            <div class="link-gutter">08</div>
+            <div class="link-body">
+              <a href="https://docs.google.com/document/d/1uItlAjeGqGMOVypg4kAYWpJM9Nfe0opzJ-jZLJXswS4/edit?usp=sharing" target="_blank">Things Which Can Be Done With Start JJS</a>
+              <div class="link-label">all things doable with start, including finishers</div>
+            </div>
+            <div class="link-arrow">→</div>
+          </div>
+ 
+          <div class="doc-entry">
+            <div class="link-gutter">09</div>
+            <div class="link-body">
+              <a href="https://docs.google.com/document/d/1dpeFD1Jy5jvhKyE8_1lZlS4WJLTCa4yHTZ-y2_ia7gg/edit?usp=sharing" target="_blank">Mesh Parts For Skill Builder JJS</a>
+              <div class="link-label">mesh parts (no texture) to pair with VFX</div>
+            </div>
+            <div class="link-arrow">→</div>
+          </div>
         </div>
-
-        <div class="link-row">
-          <span class="dot">›</span>
-          <a href="https://create.roblox.com/store/audio?creatorName=aarondeminecraft1" target="_blank">https://create.roblox.com/store/audio?creatorName=aarondeminecraft1</a>
+ 
+        <div class="doc-section">
+          <div class="section-heading">Docs by Other People</div>
+ 
+          <div class="doc-entry">
+            <div class="link-gutter">01</div>
+            <div class="link-body">
+              <a href="https://ossaamm.github.io" target="_blank">Sound IDs for JJS — ossaamm.github.io</a>
+              <div class="link-label">all JJS sounds — credits to oSam and friend</div>
+            </div>
+            <div class="link-arrow">→</div>
+          </div>
         </div>
-
-        <div class="link-row">
-          <span class="dot">›</span>
-          <a href="https://create.roblox.com/store/audio?creatorName=N_WysperLvn" target="_blank">https://create.roblox.com/store/audio?creatorName=N_WysperLvn</a>
+ 
+        <div class="credits-bar">
+          credits — <span>ujhjth</span> (blueflame662 on discord) for contributing to parts of this doc
         </div>
-
+ 
+      </div>
+      <!-- ── BUBBLE FORGE TAB ── -->
+      <div id="tab-bubble" class="tab-panel">
+        <iframe id="bubble-frame" title="Manga Bubble Generator"></iframe>
       </div>
     </div>
   </div>
-
+ 
 </div>
-
+ 
 <script>
-  document.getElementById('searchInput').addEventListener('input', function () {
+  // Tab switching
+  let bubbleLoaded = false;
+ 
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+ 
+    const topbar = document.querySelector('.topbar');
+    const isBubble = id === 'bubble';
+    topbar.style.display = isBubble ? 'none' : '';
+ 
+    // Stretch content area to full height when on bubble tab
+    document.querySelector('.content').style.padding = isBubble ? '0' : '';
+    document.querySelector('.content').style.overflow = isBubble ? 'hidden' : '';
+ 
+    if (isBubble && !bubbleLoaded) {
+      bubbleLoaded = true;
+      const frame = document.getElementById('bubble-frame');
+      frame.src = 'manga-bubble-generator.html';
+    }
+ 
+    if (!isBubble) {
+      document.getElementById('searchInput').value = '';
+      updateCount();
+    }
+  }
+ 
+  const input = document.getElementById('searchInput');
+  const count = document.getElementById('resultCount');
+ 
+  function getActiveRows() {
+    const panel = document.querySelector('.tab-panel.active');
+    return panel ? panel.querySelectorAll('.link-row, .doc-entry') : [];
+  }
+ 
+  function updateCount() {
+    const rows = getActiveRows();
+    const visible = [...rows].filter(r => r.style.display !== 'none').length;
+    const total = rows.length;
+    count.textContent = visible < total ? `${visible} / ${total}` : '';
+  }
+ 
+  input.addEventListener('input', function () {
     const q = this.value.toLowerCase();
-    document.querySelectorAll('#linkList .link-row').forEach(row => {
+    getActiveRows().forEach(row => {
       row.style.display = row.innerText.toLowerCase().includes(q) ? '' : 'none';
     });
+    updateCount();
   });
 </script>
 </body>
 </html>
+ 
